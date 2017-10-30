@@ -1,0 +1,45 @@
+* before change
+$(document).ready(function(){
+
+* after change
+function rikutokutag(anchorId) {
+	return 'rikutoku' + anchorId;
+}
+
+function updateColor(node, anchorId) {
+	var tag = rikutokutag(anchorId);
+	if (localStorage[tag]) {
+		node.style = "color: red";
+	} else {
+		node.style = "color: black";
+	}
+}
+
+function toggleColor(node, anchorId) {
+	var tag = rikutokutag(anchorId);
+	if (localStorage[tag]) {
+		localStorage.removeItem(tag);
+	} else {
+		localStorage.setItem(tag, "Marked");
+	}
+	updateColor(node, anchorId);
+	updateLinkColor(anchorId);
+}
+
+function updateLinkColor(anchorId) {
+	$("div.contents a").each(function(){
+		if (anchorId == $(this).attr("href")) {
+			updateColor(this, anchorId);
+		}
+	});
+}
+
+$(document).ready(function(){ 
+	$("h4 > a.anchor").each(function(){ 
+		var anchorId = '#' + $(this).attr("id");
+		var anchorHtml = '<button type="button" onclick="toggleColor(this.parentNode.parentNode, \'' + anchorId + '\')"> Red/Black </button>'; 
+		$(this).html(anchorHtml); 
+		updateColor(this.parentNode, anchorId);
+		updateLinkColor(anchorId);
+	});
+
